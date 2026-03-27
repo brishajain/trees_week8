@@ -1,10 +1,11 @@
 package edu.ttap.trees;
-
+//import java.util.StringBuffer;
 import java.util.List;
-
+import java.util.ArrayList;
+ 
 /**
- * A generic binary tree implementation.
- */
+* A generic binary tree implementation.
+*/
 public class Tree<T> {
     /**
      * A node of the binary tree.
@@ -13,7 +14,7 @@ public class Tree<T> {
         public T value;
         public Node<T> left;
         public Node<T> right;
-
+ 
         /**
          * @param value the value of the node
          * @param left the left child of the node
@@ -24,7 +25,7 @@ public class Tree<T> {
             this.left = left;
             this.right = right;
         }
-
+ 
         /**
          * @param value the value of the node
          */
@@ -32,18 +33,18 @@ public class Tree<T> {
             this(value, null, null);
         }
     }
-
+ 
     ///// From the reading...
-
+ 
     private Node<T> root;
-
+ 
     /**
      * Constructs a new, empty binary tree.
      */
     public Tree() {
         this.root = null;
     }
-
+ 
     /**
      * @return a sample binary tree for testing purposes
      */
@@ -65,10 +66,10 @@ public class Tree<T> {
         );
         return tree;
     }
-
+ 
 
     /**
-     * @param node the root of the tree 
+     * @param node the root of the tree
      * @return the number elements found in this tree rooted at node
      */
     private int sizeH(Node<T> node) {
@@ -78,65 +79,122 @@ public class Tree<T> {
             return 1 + sizeH(node.left) + sizeH(node.right);
         }
     }
-
+ 
     /** @return the number of elements in the tree */
     public int size() {
         return sizeH(root);
     }
-
+ 
     ///// Part 1: Contains
-
+ 
     /**
      * @param value the value to search for
      * @return true iff the tree contains <code>value</code>
      */
     public boolean contains(T value) {
-        throw new UnsupportedOperationException();
+        return containsHelper(value, root);
     }
-
+ 
+    private boolean containsHelper(T value, Node<T> cur) {
+        if(cur == null) {
+            return false;
+        } else {
+            if (cur.value.equals(value)) {
+                return true;
+            } else {
+                return containsHelper(value, cur.left) || containsHelper(value, cur.right);
+            }
+        }
+    }
+ 
     ///// Part 2: Traversals
-
+ 
     /**
+     *
      * @return the elements of this tree collected via an in-order traversal
      */
     public List<T> toListInorder() {
-        throw new UnsupportedOperationException();
+        List<T> record = new ArrayList<>();
+        toListInorderH(record, root);
+        return record;
     }
-
+ 
+    private void toListInorderH(List<T> record, Node<T> cur) {
+        if(cur == null) {
+            return;
+        }
+        toListInorderH(record, cur.left);
+        record.add(cur.value);
+        toListInorderH(record, cur.right);
+    }
+ 
     /**
      * @return the elements of this tree collected via a pre-order traversal
      */
     public List<T> toListPreorder() {
-        throw new UnsupportedOperationException();
+        List<T> record = new ArrayList<>();
+        toListPreorderH(record, root);
+        return record;
     }
 
+    private void toListPreorderH(List<T> record, Node<T> cur) {
+        if(cur == null) {
+            return;
+        }
+        record.add(cur.value);
+        toListPreorderH(record, cur.left);
+        toListPreorderH(record, cur.right);
+    }
+ 
     /**
      * @return the elements of this tree collected via a post-order traversal
      */
     public List<T> toListPostorder() {
-        throw new UnsupportedOperationException();
+        List<T> record = new ArrayList<>();
+        toListPostorderH(record, root);
+        return record;
     }
 
+    private void toListPostorderH(List<T> record, Node<T> cur) {
+        if(cur == null) {
+            return;
+        }
+        toListPostorderH(record, cur.left);
+        toListPostorderH(record, cur.right);
+        record.add(cur.value);
+    }
+ 
     ///// Part 3: Stringifying Trees
-   
+  
     /**
      * @return a string represent of this tree in the form, "[x1, ..., xk]."
      * The order of the elements is left unspecified.
      */
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        StringBuffer buf = new StringBuffer("");
+        buf = toStringH(root, buf);
+        return "[" + buf + "]";
     }
 
+    private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
+        if(cur == null) {
+            return null;
+        }
+        buf.append(String.valueOf(cur.value));
+        toStringH(cur.left, buf);
+        toStringH(cur.right, buf);
+    }
+ 
     ///// Extra: Pretty Printing
-    
+   
     /**
      * @return a string represent of this tree in bulleted list form.
      */
     public String toPrettyString() {
         throw new UnsupportedOperationException();
     }
-
+ 
     /**
      * The main driver for this program
      * @param args the command-line arguments

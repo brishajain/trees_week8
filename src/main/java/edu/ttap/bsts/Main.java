@@ -1,4 +1,4 @@
-package edu.ttap;
+package edu.ttap.bsts;
 
 /**
  * The driver for our lab on lists.
