@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import edu.ttap.trees.Tree;
+
 public class TreeTest {
     @Test
     public void emptyTreeSizeTest() {
