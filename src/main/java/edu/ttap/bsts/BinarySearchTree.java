@@ -1,6 +1,7 @@
 package edu.ttap.bsts;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A binary tree that satisifies the binary search tree invariant.
@@ -71,7 +72,19 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @param v the value to insert
      */
     public void insert(T v) {
-        throw new UnsupportedOperationException();
+        root = insertH(root, v);
+    }
+
+    private Node<T> insertH(Node<T> cur, T val){
+        if (cur == null){ 
+            return new Node<>(val, null, null); 
+        }
+        if(val.compareTo(cur.value) < 0){
+            cur.left = insertH(cur.left, val);
+        } else {
+            cur.right = insertH(cur.right, val);
+        }
+        return cur;
     }
 
     ///// Part 2: Contains
@@ -81,9 +94,24 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @return true iff this tree contains <code>v</code>
      */
     public boolean contains(T v) {
-        throw new UnsupportedOperationException();
+        return containsHelper(v, root);
     }
 
+private boolean containsHelper(T value, Node<T> cur) {
+        if(cur == null) {
+            return false;
+        } else {
+            if (cur.value.equals(value)) {
+                return true;
+            } else {
+                if(value.compareTo(cur.value) < 0){
+                     return containsHelper(value, cur.left);
+                } else { 
+                    return containsHelper(value, cur.right);
+                }
+            }
+        }
+    }
     ///// Part 3: Ordered Traversals
 
     /**
@@ -91,14 +119,43 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      */
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+         StringBuffer buf = new StringBuffer("");
+        buf = toStringH(root, buf);
+        buf.delete(buf.length() - 2, buf.length());
+    
+        return "[" + buf + "]";
     }
+     private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
+        if(cur == null) {
+            return buf;
+        }
+        toStringH(cur.left, buf);
+        buf.append(String.valueOf(cur.value));
+        buf.append(", ");
+        toStringH(cur.right, buf);
+
+        return buf;
+        
+    }    
+    
 
     /**
      * @return a list contains the elements of this BST in-order.
      */
     public List<T> toList() {
-        throw new UnsupportedOperationException();
+        List<T> lst = new ArrayList<>();
+        return toListH(root, lst);
+    }
+    private List<T> toListH(Node<T> cur, List<T> lst){
+        if (cur == null){
+            return lst;
+        }
+        
+        toListH(cur.left, lst);
+        lst.add(cur.value);
+        toListH(cur.right, lst);
+        
+        return lst;
     }
 
     ///// Part 4: BST Sorting

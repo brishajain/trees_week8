@@ -174,16 +174,21 @@ public class Tree<T> {
     public String toString() {
         StringBuffer buf = new StringBuffer("");
         buf = toStringH(root, buf);
+        buf.delete(buf.length() - 2, buf.length());
         return "[" + buf + "]";
     }
-
+    // The last two characters in any string we create are going to be ", " WE DONT WANT THIS
     private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
         if(cur == null) {
-            return null;
+            return buf;
         }
         buf.append(String.valueOf(cur.value));
+        buf.append(", ");
         toStringH(cur.left, buf);
         toStringH(cur.right, buf);
+
+        return buf;
+        
     }
  
     ///// Extra: Pretty Printing
