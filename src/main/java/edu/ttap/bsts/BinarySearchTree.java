@@ -1,6 +1,7 @@
 package edu.ttap.bsts;
 
 import java.util.List;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -167,16 +168,20 @@ private boolean containsHelper(T value, Node<T> cur) {
      * @implSpec <code>sort</code> runs in ___ time if the tree remains balanced. 
      */
     public static <T extends Comparable<? super T>> List<T> sort(List<T> lst) {
-        throw new UnsupportedOperationException();
+         BinarySearchTree<T> tree = new BinarySearchTree<T>();
+         for(int i = 0; i < lst.size(); i++){
+            tree.insert(lst.get(i));
+         }
+        return tree.toList();
     }
 
     ///// Part 5: Deletion
   
     /*
      * The three cases of deletion are:
-     * 1. (TODO: fill me in!)
-     * 2. (TODO: fill me in!)
-     * 3. (TOOD: fill me in!)
+     * 1. the node to be deleted is a leaf, when cur.right AND cur.left == null
+     * 2. the node to be deleted has only one child, when cur.right XOR cur.left == null
+     * 3. the node to be delted has two children, when cur.right AND cur.left != null
      */
 
     /**
@@ -186,6 +191,21 @@ private boolean containsHelper(T value, Node<T> cur) {
      * @param value the value to delete
      */
     public void delete(T value) {
-        throw new UnsupportedOperationException();
+        if(!this.contains(value)){
+            throw new IOException("value does not exist in tree");
+        }
+        findNode(root, value); //set this equal to a pointer
+    }
+
+    private Node<T> findNode(Node<T> cur, T val){
+         if (cur.value.equals(val)) {
+                return cur;
+            } else {
+                if(val.compareTo(cur.value) < 0){
+                     return findNode(cur.left, val);
+                } else { 
+                    return findNode(cur.right, val);
+                }
+            }
     }
 }
