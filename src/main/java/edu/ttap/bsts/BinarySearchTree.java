@@ -36,6 +36,15 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         public Node(T value) {
             this(value, null, null);
         }
+
+        /**
+         * @return if node is leaf return true
+         */
+        public boolean leaf(){
+            if(this.left == null && this.right == null) 
+                return true;
+            else return false;
+        }
     }
 
     private Node<T> root;
@@ -66,6 +75,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         return sizeH(root);
     }
 
+    
     ///// Part 1: Insertion
 
     /**
@@ -194,18 +204,57 @@ private boolean containsHelper(T value, Node<T> cur) {
         if(!this.contains(value)){
             throw new IOException("value does not exist in tree");
         }
-        findNode(root, value); //set this equal to a pointer
+
+        Node<T> toDelete = findNodeH(root, value);
+        
+        // case 1
+        if(toDelete.leaf()){
+            toDelete = null;
+        }
+        //case 2
+        
+        if(toDelete.left == null){
+            toDelete = toDelete.right;
+        }
+        if(toDelete.right == null){
+            toDelete = toDelete.left;
+        } 
+
+        // case 3
+        
+        if (sizeH(toDelete.left) > sizeH(toDelete.right)){
+            insertNode(toDelete.left, toDelete.right);
+            toDelete = toDelete.right;
+        } else{
+            insertNode(toDelete.right, toDelete.left);
+            toDelete = toDelete.left; 
+        }
     }
 
-    private Node<T> findNode(Node<T> cur, T val){
-         if (cur.value.equals(val)) {
-                return cur;
-            } else {
-                if(val.compareTo(cur.value) < 0){
-                     return findNode(cur.left, val);
-                } else { 
-                    return findNode(cur.right, val);
-                }
-            }
+    private Node<T> findNodeH(Node<T> cur, T val){
+
+        if (val.compareTo(cur.left.value) == 0 || val.compareTo(cur.right.value) == 0){
+            return cur;
+        }
+
+        if(val.compareTo(cur.value) < 0)
+            cur.left = findNodeH(cur.left, val);
+        else if(val.compareTo(cur.value) > 0)
+            cur.right = findNodeH(cur.right, val); 
+
     }
+
+    private void insertNode(Node<T> bigSubTree, Node<T> smallSubTree){
+        if(smallSubTree == null){
+            smallSubTree = bigSubTree;
+            return;
+        } else if (bigSubTree.value.compareTo(smallSubTree.value) < 0){
+            insertNode(bigSubTree, smallSubTree.left);
+        } else {
+            insertNode(bigSubTree, smallSubTree.right);   
+        }
+
+    }
+
+
 }
