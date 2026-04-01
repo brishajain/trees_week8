@@ -233,7 +233,7 @@ private boolean containsHelper(T value, Node<T> cur) {
 
     private Node<T> findNodeH(Node<T> cur, T val){
 
-        if (val.compareTo(cur.left.value) == 0 || val.compareTo(cur.right.value) == 0){
+        if (val.compareTo(cur.value) == 0){
             return cur;
         }
 
@@ -244,14 +244,14 @@ private boolean containsHelper(T value, Node<T> cur) {
 
     }
 
-    private void insertNode(Node<T> bigSubTree, Node<T> smallSubTree){
-        if(smallSubTree == null){
-            smallSubTree = bigSubTree;
+    private void insertNode(Node<T> dontRecurse, Node<T> doRecurse){
+        if(doRecurse == null){
+            doRecurse = dontRecurse;
             return;
-        } else if (bigSubTree.value.compareTo(smallSubTree.value) < 0){
-            insertNode(bigSubTree, smallSubTree.left);
+        } else if (dontRecurse.value.compareTo(doRecurse.value) < 0){
+            insertNode(dontRecurse, doRecurse.left);
         } else {
-            insertNode(bigSubTree, smallSubTree.right);   
+            insertNode(dontRecurse, doRecurse.right);   
         }
 
     }
