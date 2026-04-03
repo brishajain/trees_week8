@@ -202,7 +202,7 @@ private boolean containsHelper(T value, Node<T> cur) {
      */
     public void delete(T value) {
         if(!this.contains(value)){
-            throw new IOException("value does not exist in tree");
+            return; //value is not in tree no deletion will occur
         }
 
         Node<T> toDelete = findNodeH(root, value);
@@ -210,14 +210,17 @@ private boolean containsHelper(T value, Node<T> cur) {
         // case 1
         if(toDelete.leaf()){
             toDelete = null;
+            return;
         }
         //case 2
         
         if(toDelete.left == null){
             toDelete = toDelete.right;
+            return;
         }
         if(toDelete.right == null){
             toDelete = toDelete.left;
+            return;
         } 
 
         // case 3
@@ -225,22 +228,24 @@ private boolean containsHelper(T value, Node<T> cur) {
         if (sizeH(toDelete.left) > sizeH(toDelete.right)){
             insertNode(toDelete.left, toDelete.right);
             toDelete = toDelete.right;
+            return;
         } else{
             insertNode(toDelete.right, toDelete.left);
             toDelete = toDelete.left; 
+            return;
         }
     }
 
     private Node<T> findNodeH(Node<T> cur, T val){
 
-        if (val.compareTo(cur.value) == 0){
+        if (val.compareTo(cur.value) == 0){ //value at cur
             return cur;
+        } else if(val.compareTo(cur.value) < 0){ //left recursion
+            return findNodeH(cur.left, val);
+        }else{ // right recursion
+            return findNodeH(cur.right, val); 
         }
 
-        if(val.compareTo(cur.value) < 0)
-            cur.left = findNodeH(cur.left, val);
-        else if(val.compareTo(cur.value) > 0)
-            cur.right = findNodeH(cur.right, val); 
 
     }
 
