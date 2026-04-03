@@ -108,7 +108,13 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         return containsHelper(v, root);
     }
 
-private boolean containsHelper(T value, Node<T> cur) {
+    /**
+     * 
+     * @param value being search for
+     * @param cur current node in tree being examined
+     * @return boolean value as it recursively searches for a value
+     */
+    private boolean containsHelper(T value, Node<T> cur) {
         if(cur == null) {
             return false;
         } else {
@@ -116,7 +122,7 @@ private boolean containsHelper(T value, Node<T> cur) {
                 return true;
             } else {
                 if(value.compareTo(cur.value) < 0){
-                     return containsHelper(value, cur.left);
+                    return containsHelper(value, cur.left);
                 } else { 
                     return containsHelper(value, cur.right);
                 }
@@ -136,6 +142,12 @@ private boolean containsHelper(T value, Node<T> cur) {
     
         return "[" + buf + "]";
     }
+
+    /**
+     * @param cur current node in a tree
+     * @param buf string buffer that will contain all values in a binary tree
+     * @return a string buffer containing values stored in a tree appended together
+     */
      private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
         if(cur == null) {
             return buf;
@@ -146,7 +158,6 @@ private boolean containsHelper(T value, Node<T> cur) {
         toStringH(cur.right, buf);
 
         return buf;
-        
     }    
     
 
@@ -236,6 +247,13 @@ private boolean containsHelper(T value, Node<T> cur) {
         }
     }
 
+
+    /**
+     * Precondition: given value exists in tree
+     * @param cur a node in a Binary Search Tree
+     * @param val the value being searched for
+     * @return the node that a given value is stored at
+     */
     private Node<T> findNodeH(Node<T> cur, T val){
 
         if (val.compareTo(cur.value) == 0){ //value at cur
@@ -248,7 +266,12 @@ private boolean containsHelper(T value, Node<T> cur) {
 
 
     }
-
+    /** 
+     * Appends the larger subtree created by deletion to the smaller subtree
+     * precondition: dontRecurse and doRecurse are not null trees
+     * @param dontRecurse root of (larger) subtree being attached to doRecurse
+     * @param doRecurse root of (smaller) subtree that will contain dontRecurse subtree
+     */ 
     private void insertNode(Node<T> dontRecurse, Node<T> doRecurse){
         if(doRecurse == null){
             doRecurse = dontRecurse;
