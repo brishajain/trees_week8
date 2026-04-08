@@ -119,6 +119,11 @@ public class Tree<T> {
         return record;
     }
  
+    /**
+     * Constructs a list with elements in binary search tree in order
+     * @param record list that the elements are being put in
+     * @param cur the current node we are traversing over and pulling a value from
+     */
     private void toListInorderH(List<T> record, Node<T> cur) {
         if(cur == null) {
             return;
@@ -137,6 +142,11 @@ public class Tree<T> {
         return record;
     }
 
+    /**
+     * Constructs a list with elements in binary search tree in pre order
+     * @param record list that the elements are being put in
+     * @param cur the current node we are traversing over and pulling a value from
+     */
     private void toListPreorderH(List<T> record, Node<T> cur) {
         if(cur == null) {
             return;
@@ -155,6 +165,11 @@ public class Tree<T> {
         return record;
     }
 
+     /**
+     * Constructs a list with elements in binary search tree in post-order
+     * @param record list that the elements are being put in
+     * @param cur the current node we are traversing over and pulling a value from
+     */
     private void toListPostorderH(List<T> record, Node<T> cur) {
         if(cur == null) {
             return;

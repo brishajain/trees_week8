@@ -26,7 +26,7 @@ public class Grin {
 
             HuffmanTree tree = new HuffmanTree(in);
             tree.decode(in, out);
-
+            
             in.close();
             out.close();
 

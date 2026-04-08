@@ -57,8 +57,7 @@ public class HuffmanTree {
      * 
      * return @true if node has no children, false otherwise.
      */
-    boolean isLeaf()
-    {
+    boolean isLeaf() {
         return zero == null && one == null;
     }
 
@@ -76,6 +75,11 @@ public class HuffmanTree {
         
     }
     
+    /**
+     * Stores bit character representation in Huffman Tree 
+     * @param in input stream from file
+     * @return returns root or current node
+     */
     private Node HuffmanTreeH (BitInputStream in){
         int bit = in.readBit();
         Node cur;
@@ -106,13 +110,21 @@ public class HuffmanTree {
        this.decodeH(root, in, out);
     }
 
+    /**
+     * Finds a character given compressed bitwise representation 
+     * @param cur current node in traversing over
+     * @param in input stream
+     * @param out output stream
+     */
     private void decodeH(Node cur, BitInputStream in, BitOutputStream out){
         int bit = in.readBit();
-        if (bit == -1){
-           // throw new IOException("reached end of pay load before could finish reading through tree");
-        } //do something
-
-        if(cur.isLeaf()){
+        if (bit == -1) {
+            throw new IllegalArgumentException("reached end of pay load before could finish reading through tree");
+        } 
+        if(cur == null) {
+            return;
+        }
+        if(cur.isLeaf()) {
             out.writeBits(cur.value, 9);
         }
         if(bit == 0) {
