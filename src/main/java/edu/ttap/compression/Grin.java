@@ -16,7 +16,7 @@ public class Grin {
     public static final int MAGIC_NUMBER = 1846;
 
     public static void decode(String infile, String outfile) throws IllegalArgumentException {
-        try {
+        try{
             BitInputStream in = new BitInputStream(infile);
             BitOutputStream out = new BitOutputStream(outfile);
             
