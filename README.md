@@ -1,6 +1,6 @@
 # Grin Decompression
 
-Authors: Carrie Anne Little, ...
+Authors: Carrie, Brisa, Juan Diego
 
 ## Build commands
 
@@ -12,4 +12,4 @@ Authors: Carrie Anne Little, ...
 
 * Evening Tutor Sara explained try-catch branches
 * Evening Tutor Meryem helping with terminal commands to compile and running  
-*   ...
+* PM give idea on how to go about debugging code
