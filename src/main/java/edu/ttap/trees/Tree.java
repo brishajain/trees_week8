@@ -1,5 +1,5 @@
 package edu.ttap.trees;
-//import java.util.StringBuffer;
+
 import java.util.List;
 import java.util.ArrayList;
  
@@ -12,7 +12,9 @@ public class Tree<T> {
      */
     public static class Node<T> {
         public T value;
+        
         public Node<T> left;
+        
         public Node<T> right;
  
         /**
@@ -96,7 +98,7 @@ public class Tree<T> {
     }
  
     private boolean containsHelper(T value, Node<T> cur) {
-        if(cur == null) {
+        if (cur == null) {
             return false;
         } else {
             if (cur.value.equals(value)) {
@@ -110,7 +112,6 @@ public class Tree<T> {
     ///// Part 2: Traversals
  
     /**
-     *
      * @return the elements of this tree collected via an in-order traversal
      */
     public List<T> toListInorder() {
@@ -125,7 +126,7 @@ public class Tree<T> {
      * @param cur the current node we are traversing over and pulling a value from
      */
     private void toListInorderH(List<T> record, Node<T> cur) {
-        if(cur == null) {
+        if (cur == null) {
             return;
         }
         toListInorderH(record, cur.left);
@@ -148,7 +149,7 @@ public class Tree<T> {
      * @param cur the current node we are traversing over and pulling a value from
      */
     private void toListPreorderH(List<T> record, Node<T> cur) {
-        if(cur == null) {
+        if (cur == null) {
             return;
         }
         record.add(cur.value);
@@ -171,7 +172,7 @@ public class Tree<T> {
      * @param cur the current node we are traversing over and pulling a value from
      */
     private void toListPostorderH(List<T> record, Node<T> cur) {
-        if(cur == null) {
+        if (cur == null) {
             return;
         }
         toListPostorderH(record, cur.left);
@@ -192,9 +193,10 @@ public class Tree<T> {
         buf.delete(buf.length() - 2, buf.length());
         return "[" + buf + "]";
     }
+
     // The last two characters in any string we create are going to be ", " WE DONT WANT THIS
     private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
-        if(cur == null) {
+        if (cur == null) {
             return buf;
         }
         buf.append(String.valueOf(cur.value));

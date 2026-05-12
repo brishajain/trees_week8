@@ -18,7 +18,9 @@ public class HuffmanTree {
      */
     private static class Node {
         private int value;
+
         private Node zero;
+        
         private Node one;
 
         /**

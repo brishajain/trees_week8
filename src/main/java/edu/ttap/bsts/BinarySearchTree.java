@@ -1,7 +1,6 @@
 package edu.ttap.bsts;
 
 import java.util.List;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +15,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      */
     private static class Node<T> {
         public T value;
+        
         public Node<T> left;
+
         public Node<T> right;
 
         /**
@@ -40,10 +41,12 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         /**
          * @return if node is leaf return true
          */
-        public boolean leaf(){
-            if(this.left == null && this.right == null) 
+        public boolean leaf() {
+            if (this.left == null && this.right == null) {
                 return true;
-            else return false;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -86,11 +89,11 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         root = insertH(root, v);
     }
 
-    private Node<T> insertH(Node<T> cur, T val){
-        if (cur == null){ 
+    private Node<T> insertH(Node<T> cur, T val) {
+        if (cur == null) { 
             return new Node<>(val, null, null); 
         }
-        if(val.compareTo(cur.value) < 0){
+        if (val.compareTo(cur.value) < 0) {
             cur.left = insertH(cur.left, val);
         } else {
             cur.right = insertH(cur.right, val);
@@ -109,19 +112,18 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
     }
 
     /**
-     * 
-     * @param value being search for
+     * @param value being searched for
      * @param cur current node in tree being examined
      * @return boolean value as it recursively searches for a value
      */
     private boolean containsHelper(T value, Node<T> cur) {
-        if(cur == null) {
+        if (cur == null) {
             return false;
         } else {
             if (cur.value.equals(value)) {
                 return true;
             } else {
-                if(value.compareTo(cur.value) < 0){
+                if (value.compareTo(cur.value) < 0) {
                     return containsHelper(value, cur.left);
                 } else { 
                     return containsHelper(value, cur.right);
@@ -136,7 +138,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      */
     @Override
     public String toString() {
-         StringBuffer buf = new StringBuffer("");
+        StringBuffer buf = new StringBuffer("");
         buf = toStringH(root, buf);
         buf.delete(buf.length() - 2, buf.length());
     
@@ -148,8 +150,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @param buf string buffer that will contain all values in a binary tree
      * @return a string buffer containing values stored in a tree appended together
      */
-     private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
-        if(cur == null) {
+    private StringBuffer toStringH(Node<T> cur, StringBuffer buf) {
+        if (cur == null) {
             return buf;
         }
         toStringH(cur.left, buf);
@@ -168,8 +170,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         List<T> lst = new ArrayList<>();
         return toListH(root, lst);
     }
-    private List<T> toListH(Node<T> cur, List<T> lst){
-        if (cur == null){
+
+    private List<T> toListH(Node<T> cur, List<T> lst) {
+        if (cur == null) {
             return lst;
         }
         
@@ -189,10 +192,10 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @implSpec <code>sort</code> runs in ___ time if the tree remains balanced. 
      */
     public static <T extends Comparable<? super T>> List<T> sort(List<T> lst) {
-         BinarySearchTree<T> tree = new BinarySearchTree<T>();
-         for(int i = 0; i < lst.size(); i++){
+        BinarySearchTree<T> tree = new BinarySearchTree<T>();
+        for (int i = 0; i < lst.size(); i++) {
             tree.insert(lst.get(i));
-         }
+        }
         return tree.toList();
     }
 
@@ -212,35 +215,35 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @param value the value to delete
      */
     public void delete(T value) {
-        if(!this.contains(value)){
+        if (!this.contains(value)) {
             return; //value is not in tree no deletion will occur
         }
 
         Node<T> toDelete = findNodeH(root, value);
         
         // case 1
-        if(toDelete.leaf()){
+        if (toDelete.leaf()) {
             toDelete = null;
             return;
         }
         //case 2
         
-        if(toDelete.left == null){
+        if (toDelete.left == null) {
             toDelete = toDelete.right;
             return;
         }
-        if(toDelete.right == null){
+        if (toDelete.right == null) {
             toDelete = toDelete.left;
             return;
         } 
 
         // case 3
         
-        if (sizeH(toDelete.left) > sizeH(toDelete.right)){
+        if (sizeH(toDelete.left) > sizeH(toDelete.right)) {
             insertNode(toDelete.left, toDelete.right);
             toDelete = toDelete.right;
             return;
-        } else{
+        } else {
             insertNode(toDelete.right, toDelete.left);
             toDelete = toDelete.left; 
             return;
@@ -254,29 +257,30 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @param val the value being searched for
      * @return the node that a given value is stored at
      */
-    private Node<T> findNodeH(Node<T> cur, T val){
+    private Node<T> findNodeH(Node<T> cur, T val) {
 
-        if (val.compareTo(cur.value) == 0){ //value at cur
+        if (val.compareTo(cur.value) == 0) { //value at cur
             return cur;
-        } else if(val.compareTo(cur.value) < 0){ //left recursion
+        } else if (val.compareTo(cur.value) < 0) { //left recursion
             return findNodeH(cur.left, val);
-        }else{ // right recursion
+        } else { // right recursion
             return findNodeH(cur.right, val); 
         }
 
 
     }
+
     /** 
      * Appends the larger subtree created by deletion to the smaller subtree
      * precondition: dontRecurse and doRecurse are not null trees
      * @param dontRecurse root of (larger) subtree being attached to doRecurse
      * @param doRecurse root of (smaller) subtree that will contain dontRecurse subtree
      */ 
-    private void insertNode(Node<T> dontRecurse, Node<T> doRecurse){
-        if(doRecurse == null){
+    private void insertNode(Node<T> dontRecurse, Node<T> doRecurse) {
+        if (doRecurse == null) {
             doRecurse = dontRecurse;
             return;
-        } else if (dontRecurse.value.compareTo(doRecurse.value) < 0){
+        } else if (dontRecurse.value.compareTo(doRecurse.value) < 0) {
             insertNode(dontRecurse, doRecurse.left);
         } else {
             insertNode(dontRecurse, doRecurse.right);   
