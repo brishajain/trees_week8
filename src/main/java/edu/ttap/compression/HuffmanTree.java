@@ -1,137 +1,125 @@
 package edu.ttap.compression;
 
-import javax.imageio.IIOException;
-
 /**
- * A HuffmanTree derives a space-efficient coding of a collection of byte
- * values.
- *
- * The huffman tree encodes values in the range 0--255 which would normally
- * take 8 bits.  However, we also need to encode a special EOF character to
- * denote the end of a .grin file.  Thus, we need 9 bits to store each
- * byte value.  This is fine for file writing (modulo the need to write in
- * byte chunks to the file), but Java does not have a 9-bit data type.
- * Instead, we use the next larger primitive integral type, short, to store
- * our byte values.
+ * A HuffmanTree decodes files in the .grin format.
  */
 public class HuffmanTree {
+    /** The special end-of-file marker. */
+    private static final int EOF = 256;
+
+    /** Number of bits used to store tree values. */
+    private static final int VALUE_BITS = 9;
+
+    /** Number of bits used to write normal characters. */
+    private static final int BYTE_BITS = 8;
 
     /**
-     * A single node in the Huffman tree.
-     *
-     * Leaf nodes store a value and have no children.
-     * Interior nodes store left/right children and ignore the value field.
+     * A node in the Huffman tree.
      */
     private static class Node {
         private int value;
         private Node zero;
         private Node one;
-    
 
-    /**
-    * Constructs a leaf node with the given value.
-    *
-    * @param value the 9-bit value stored at this leaf
-    */
-    public Node(int value)
-    {
-        this.value = value;
-        this.zero = null;
-        this.one = null;
+        /**
+         * Constructs a leaf node.
+         *
+         * @param value the value stored in this node
+         */
+        Node(int value) {
+            this.value = value;
+            this.zero = null;
+            this.one = null;
+        }
+
+        /**
+         * Constructs an interior node.
+         *
+         * @param zero the child reached by reading 0
+         * @param one the child reached by reading 1
+         */
+        Node(Node zero, Node one) {
+            this.value = -1;
+            this.zero = zero;
+            this.one = one;
+        }
+
+        /**
+         * Checks whether this node is a leaf.
+         *
+         * @return true if this node is a leaf
+         */
+        boolean isLeaf() {
+            return zero == null && one == null;
+        }
     }
 
-    /**
-    * Constructs an interior node with the given children.
-    *
-    * @param left the child reached by reading a 0
-    * @param right the child reached by reading a 1
-    */
-    public Node(Node left, Node right)
-    {
-        this.zero = left;
-        this.one = right;
-    }
-
-    /** 
-     * Determines whether this node is a leaf. 
-     * 
-     * return @true if node has no children, false otherwise.
-     */
-    boolean isLeaf() {
-        return zero == null && one == null;
-    }
-
-    }
-   
+    /** The root of the Huffman tree. */
     private Node root;
+
     /**
-     * Constructs a new HuffmanTree from the given file.
-     * 
-     * @param in the input file (as a BitInputStream)
+     * Constructs a Huffman tree from the input stream.
+     *
+     * @param in the input stream
      */
     public HuffmanTree(BitInputStream in) {
-       //how do we know when we've reached the end of the serialized huffmantree?
-        root = HuffmanTreeH(in);
-        
+        root = readTree(in);
     }
-    
+
     /**
-     * Stores bit character representation in Huffman Tree 
-     * @param in input stream from file
-     * @return returns root or current node
+     * Reads a serialized Huffman tree.
+     *
+     * @param in the input stream
+     * @return the root of the tree
      */
-    private Node HuffmanTreeH (BitInputStream in){
+    private Node readTree(BitInputStream in) {
         int bit = in.readBit();
-        Node cur;
-        if (bit == -1) { 
-            //throw error?
+
+        if (bit == -1) {
+            throw new IllegalArgumentException("Unexpected end of tree.");
         }
-         
-        if (bit == 0){
-            cur = new Node(in.readBits(9));
-        } else{
-            cur = new Node(null, null);
-            cur.zero = HuffmanTreeH(in);
-            cur.one = HuffmanTreeH(in);
+
+        if (bit == 0) {
+            int value = in.readBits(VALUE_BITS);
+            return new Node(value);
         }
-        return cur;
+
+        Node zero = readTree(in);
+        Node one = readTree(in);
+        return new Node(zero, one);
     }
-    
+
     /**
-     * Decodes a stream of huffman codes from a file given as a stream of
-     * bits into their uncompressed form, saving the results to the given
-     * output stream. Note that the EOF character is not written to out
-     * because it is not a valid 8-bit chunk (it is 9 bits).
-     * 
-     * @param in the file to decompress.
-     * @param out the file to write the decompressed output to.
+     * Decodes the compressed payload.
+     *
+     * @param in the input stream
+     * @param out the output stream
      */
     public void decode(BitInputStream in, BitOutputStream out) {
-       this.decodeH(root, in, out);
-    }
+        boolean done = false;
 
-    /**
-     * Finds a character given compressed bitwise representation 
-     * @param cur current node in traversing over
-     * @param in input stream
-     * @param out output stream
-     */
-    private void decodeH(Node cur, BitInputStream in, BitOutputStream out){
-        int bit = in.readBit();
-        if (bit == -1) {
-            throw new IllegalArgumentException("reached end of pay load before could finish reading through tree");
-        } 
-        if(cur == null) {
-            return;
-        }
-        if(cur.isLeaf()) {
-            out.writeBits(cur.value, 9);
-        }
-        if(bit == 0) {
-            decodeH(cur.zero, in, out);
-        } else{
-            decodeH(cur.one, in, out);
-        } 
+        while (!done) {
+            Node cur = root;
 
+            while (!cur.isLeaf()) {
+                int bit = in.readBit();
+
+                if (bit == -1) {
+                    throw new IllegalArgumentException("Unexpected end of payload.");
+                }
+
+                if (bit == 0) {
+                    cur = cur.zero;
+                } else {
+                    cur = cur.one;
+                }
+            }
+
+            if (cur.value == EOF) {
+                done = true;
+            } else {
+                out.writeBits(cur.value, BYTE_BITS);
+            }
+        }
     }
 }
